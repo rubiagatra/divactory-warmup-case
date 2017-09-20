@@ -1,0 +1,57 @@
+---
+title: "Eksplorasi Data"
+output:
+  html_notebook: default
+  pdf_document: default
+---
+<style>
+body {
+text-align: justify}
+</style>
+Pada kasus ini dilakukan eksplorasi data training guna mendapatkan gambaran secara umum bagaimana karakteristik data yang telah diberikan. Data yang telah di import dilakukan penamaan ulang agar lebih sederhana. Dimana variabel "peubah" diganti dengan "x" dan "target" menjadi "y". 
+```{r}
+#Import Data
+training <- read.csv("D:/Training Data.csv", header = T)
+colnames(training)<-c("x1","x2","x3","x4","x5","x6","x7","x8","x9","x10","x11","x12","x13","x14","x15","x16","x17","x18","x19","x20","x21","y")
+
+```
+Data yang diperoleh terdiri dari 22 variabel dimana 21 variabel merupakan variabel kontinu (x) sedangkan 1 variabel (y) merupakan variabel kategorik. Kondisi kategori pada variabel y memiliki proporsi yang cenderung sama yakni sekitar 50% untuk tiap kategori.
+```{r}
+#Piechart
+x <-  table(training[,22])
+labels <-  c("0","1")
+piepercent<- round(100*x/sum(x), 1)
+pie(x, labels = paste(piepercent,"%"), main = "Target",col = rainbow(length(x)))
+legend("topright", c("0","1"), cex = 0.8,
+       fill = rainbow(length(x)))
+```
+Karakteristik masing-masing variabel kontinu disajikan dalam bentuk box plot di bawah. Berdasarkan boxplot terlihat bahwa untuk masing-masing variabel tidak ada perbedaan antara karakteristik pada populasi target 1 dengan 0. Sehingga tidak terdapat variabel yang benar-benar mencirikan perbedaan karakteristik antara populasi 1 dengan 0.
+```{r}
+par(mfrow=c(2,6),no.readonly = TRUE)
+for (i in 1:12){
+  boxplot(training[,i] ~ training[,22], ylim = c(0, 0.7), ylab = paste("peubah",i),
+          xlab = "target" ,col=c(5,7))
+}
+
+```
+```{r}
+par(mfrow=c(2,5),no.readonly = TRUE)
+for (i in 13:21){
+  boxplot(training[,i] ~ training[,22], ylim = c(0, 0.7), ylab = paste("peubah",i),
+          xlab = "target" ,col=c(5,7))
+}
+
+```
+Hubungan antar variabel x ditunjukkan oleh matriks korelasi. Nilai korelasi memiliki rentang antara -1 sampai dengan 1. Semakin mendekati nilai 0 maka hubungan antara kedua variabel tersebut semakin kecil. Sedangkan semakin mendekati nilai 1, maka hubungan antar variabel semakin besar dimana nilai positif menunjukkan pola hubungan yang searah (contoh : semakin besar nilai x1 maka nilai x13 juga cenderung semakin besar). Kemudian apabila bernilai negatif maka hubungan antar variabel tersebut berkebalikan (contoh : semakin besar nilai x1 maka nilai x8 semakin kecil). Agar mempermudah dalam melihat kondisi korelasi antar variabel, disajikan dalam bentuk matrix korelasi disertai dengan indikator warna.
+```{r}
+#Correlations Plot
+library(corrplot)
+korelasi = cor(training[,1:21], method = "pearson")
+corrplot(korelasi, method  = "circle", type = "lower", main = "
+         Correlation")
+```
+
+
+
+
+
